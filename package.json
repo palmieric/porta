@@ -71,6 +71,7 @@
     "webpack-dev-server": "2.11.2"
   },
   "dependencies": {
+    "@patternfly/react-core": "^1.39.1",
     "@rails/webpacker": "^3.5.5",
     "ajv": "^6.5.5",
     "bootstrap-sass": "3",
@@ -91,6 +92,8 @@
     "react-dom": "^16.5.2",
     "react-jsonschema-form": "^1.0.0",
     "react-redux": "^5.0.6",
+    "react-router-dom": "^4.2.2",
+    "react-router-redux": "^4.0.8",
     "react-sortable-hoc": "^1.4.0",
     "redux": "^4.0.1",
     "redux-api-middleware": "^3.0.1",
