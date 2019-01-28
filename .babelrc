@@ -1,5 +1,6 @@
 {
   "plugins": [
+    "@babel/plugin-proposal-class-properties",
     "@babel/plugin-syntax-dynamic-import"
   ],
   "presets": [
@@ -10,8 +11,7 @@
           "ie": "11",
           "firefox": "62",
           "chrome": "69"
-        },
-        "useBuiltIns": "entry"
+        }
       }
     ],
     "@babel/react",
