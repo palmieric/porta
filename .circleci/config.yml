@@ -273,8 +273,6 @@ executors:
       - *memcached-container
       - *redis-container
     working_directory: /opt/app-root/src/project
-    environment:
-      DB: mysql
 
   builder-with-postgres:
     resource_class: small
@@ -285,7 +283,7 @@ executors:
       - *redis-container
     working_directory: /opt/app-root/src/project
     environment:
-      DB: postgresql
+      DATABASE_URL: postgresql://postgres:@127.0.0.1:5432/systemdb
 
   builder-with-oracle:
     resource_class: large
@@ -296,7 +294,7 @@ executors:
       - *redis-container
     working_directory: /opt/app-root/src/project
     environment:
-      DB: oracle
+      DATABASE_URL: oracle-enhanced://rails:railspass@127.0.0.1:1521/systempdb
 
 ##################################### CIRCLECI JOBS ############################################
 
