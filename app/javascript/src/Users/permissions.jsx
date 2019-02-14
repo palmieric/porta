@@ -4,7 +4,7 @@ import 'core-js/fn/object/assign' // make Object.assign on IE 11
 import 'core-js/fn/array/includes'
 import {dom, element} from 'decca' // eslint-disable-line no-unused-vars
 import classNames from 'classnames'
-import { getFeatureName } from './utils'
+import { getFeatureName, isServicePermissionsGranted } from './utils'
 
 const Inputs = { // eslint-disable-line no-unused-vars
   render ({props, children}) {
@@ -63,7 +63,7 @@ export const Permissions = { // eslint-disable-line no-unused-vars
 export const FeatureAccessInput = { // eslint-disable-line no-unused-vars
   render ({ children, context }) {
     let olClass = classNames('FeatureAccessList',
-      {'FeatureAccessList--noServicePermissionsGranted': !servicePermissionsGranted(context)})
+      {'FeatureAccessList--noServicePermissionsGranted': !isServicePermissionsGranted(context.admin_sections)})
 
     return (
       <fieldset>
@@ -72,11 +72,6 @@ export const FeatureAccessInput = { // eslint-disable-line no-unused-vars
       </fieldset>
     )
   }
-}
-
-function servicePermissionsGranted (context) {
-  let sections = context.admin_sections || []
-  return SERVICE_PERMISSIONS.filter(section => sections.includes(section)).length > 0
 }
 
 export const FeatureAccess = { // eslint-disable-line no-unused-vars
@@ -99,7 +94,7 @@ export const FeatureAccess = { // eslint-disable-line no-unused-vars
     )
 
     let inputClass = classNames('user_member_permission_ids',
-      { 'user_member_permission_ids--service': SERVICE_PERMISSIONS.includes(value) })
+      { 'user_member_permission_ids--service': isServicePermissionsGranted(value) })
 
     return (
       <li class={liClass}>
@@ -129,7 +124,7 @@ export const ServiceFeatureAccess = { // eslint-disable-line no-unused-vars
     }
 
     let liClass = classNames(`FeatureAccessList-item FeatureAccessList-item--${value}`,
-      { 'FeatureAccessList--noServicePermissionsGranted': !servicePermissionsGranted(context) })
+      { 'FeatureAccessList--noServicePermissionsGranted': !isServicePermissionsGranted(context.admin_sections) })
 
     // if service feature access checkbox is unchecked
     // at least blank service_ids array has to be sent
@@ -150,12 +145,10 @@ export const ServiceFeatureAccess = { // eslint-disable-line no-unused-vars
   }
 }
 
-const SERVICE_PERMISSIONS = ['partners', 'monitoring', 'plans']
-
 export const ServiceAccessList = { // eslint-disable-line no-unused-vars
   render ({children, context}) {
     let olClass = classNames('ServiceAccessList',
-      { 'ServiceAccessList--noServicePermissionsGranted': !servicePermissionsGranted(context) })
+      { 'ServiceAccessList--noServicePermissionsGranted': !isServicePermissionsGranted(context.admin_sections) })
 
     return (
       <fieldset>
