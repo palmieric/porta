@@ -1,7 +1,22 @@
 # frozen_string_literal: true
 class BillingObserver < ActiveRecord::Observer
 
-  class RangeForVariableCost < Range; end
+  class RangeForVariableCost < Range
+    def distance_in_seconds
+      (utc(self.end) - utc(self.begin)).to_i
+    end
+
+    def empty?
+      distance_in_seconds.zero?
+    end
+
+    private
+
+    def utc(date_or_time)
+      date_or_time.try(:utc) || date_or_time.to_time(:utc)
+    end
+  end
+
   observe :contract
 
   # It is called 'manually' from Contract#notify_plan_changed
@@ -16,7 +31,7 @@ class BillingObserver < ActiveRecord::Observer
       last_midnight = Date.today.beginning_of_day
       period = RangeForVariableCost.new(period_from, last_midnight)
 
-      contract.bill_for_variable(period, current_invoice, plan)
+      contract.bill_for_variable(period, current_invoice, plan) unless period.try(:empty?)
     end
   end
 
