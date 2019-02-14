@@ -27,6 +27,7 @@ en:
     finance: 'Billing API'
     stats: 'Analytics API'
     account_management: 'Account Management API'
+    policy_registry: 'Policy Registry API'
     cms: 'Developer Portal API'
     ro: 'Read Only'
     rw: 'Read & Write'
@@ -110,6 +111,7 @@ en:
         names:
           service_management_api: 'Service Management API'
           account_management_api: 'Account Management API'
+          policy_registry_api: 'Policy Registry API'
           analytics_api: 'Analytics API'
           billing_api: 'Billing API'
           master_api: 'Master API'
@@ -126,6 +128,7 @@ en:
     settings: Settings
     services: Selected APIs
     plans: Integration & Application Plans
+    policy_registry: Policy Registry
 
   go_live_states:
     api_sandbox_traffic: "Done: Add your API endpoint and hit save & test"
