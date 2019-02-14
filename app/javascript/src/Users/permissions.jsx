@@ -4,6 +4,7 @@ import 'core-js/fn/object/assign' // make Object.assign on IE 11
 import 'core-js/fn/array/includes'
 import {dom, element} from 'decca' // eslint-disable-line no-unused-vars
 import classNames from 'classnames'
+import { getFeatureName } from './utils'
 
 const Inputs = { // eslint-disable-line no-unused-vars
   render ({props, children}) {
@@ -222,14 +223,6 @@ export const ServiceAccess = { // eslint-disable-line no-unused-vars
 export const Form = { // eslint-disable-line no-unused-vars
   render ({ props }) {
     let { services, features } = props
-    const FEATURE_NAMES = {
-      portal: 'Developer Portal',
-      finance: 'Billing',
-      settings: 'Settings',
-      partners: 'Developer Accounts -- Applications',
-      monitoring: 'Analytics',
-      plans: 'Integration & Application Plans'
-    }
     return (
       <Inputs name='Administrative'>
         <RoleInput>
@@ -241,7 +234,7 @@ export const Form = { // eslint-disable-line no-unused-vars
           <FeatureAccessInput role='member'>
 
             <input type='hidden' name='user[member_permission_ids][]' />
-            {features.map(feature => <FeatureAccess value={feature}>&nbsp;{FEATURE_NAMES[feature]}</FeatureAccess>)}
+            {features.map(feature => <FeatureAccess value={feature}>&nbsp;{getFeatureName(feature)}</FeatureAccess>)}
             <ServiceFeatureAccess value='services'> All current and future APIs</ServiceFeatureAccess>
           </FeatureAccessInput>
 
