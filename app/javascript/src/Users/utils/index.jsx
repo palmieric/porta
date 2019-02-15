@@ -1,3 +1,7 @@
+// @flow
+
+import type { Feature } from 'Users/types'
+
 const FEATURE_NAMES = {
   portal: 'Developer Portal',
   finance: 'Billing',
@@ -9,7 +13,7 @@ const FEATURE_NAMES = {
 
 const FEATURES_GRANTING_SERVICE_ACCESS = ['partners', 'monitoring', 'plans']
 
-export function getFeatureName (feature) {
+export function getFeatureName (feature: Feature): string {
   if (feature in FEATURE_NAMES) {
     return FEATURE_NAMES[feature]
   }
@@ -17,7 +21,7 @@ export function getFeatureName (feature) {
   throw new Error(`${feature} is not a known feature`)
 }
 
-export function isServicePermissionsGranted (features) {
+export function isServicePermissionsGranted (features: string | Array<string>): boolean {
   if (typeof features === 'string') {
     return FEATURES_GRANTING_SERVICE_ACCESS.includes(features)
   } else {
