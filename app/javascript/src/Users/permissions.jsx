@@ -11,33 +11,8 @@ import { FeatureAccessInput } from 'Users/components/FeatureAccessInput'
 import { FeatureAccess } from 'Users/components/FeatureAccess'
 import { ServiceFeatureAccess } from 'Users/components/ServiceFeatureAccess'
 import { ServiceAccessList } from 'Users/components/ServiceAccessList'
-import { AdminSection } from 'Users/components/AdminSection'
+import { ServiceAccess } from 'Users/components/ServiceAccess'
 import { getFeatureName, isServicePermissionsGranted } from './utils'
-
-const ServiceAccess = ({ service = {}, checkedFeatures, checked = false, disabled = false, onChange }) => {
-  let { id, name } = service
-
-  let toggle = () => {
-    onChange(id)
-  }
-  return (
-    <li className='ServiceAccessList-item'>
-      <label className='ServiceAccessList-label is-checked'
-        htmlFor={`user_member_permission_service_ids_${id}`}>
-        <input className='user_member_permission_service_ids'
-          id={`user_member_permission_service_ids_${id}`}
-          name='user[member_permission_service_ids][]' type='checkbox' value={id}
-          checked={checked} disabled={disabled} onChange={toggle}/>
-        <span className='ServiceAccessList-labelText'>&nbsp;{ name }</span>
-      </label>
-      <ul className='ServiceAccessList-sections'>
-        <AdminSection name='plans' available={checkedFeatures.includes('plans')}>Integration & Application Plans</AdminSection>
-        <AdminSection name='monitoring' available={checkedFeatures.includes('monitoring')}>Analytics</AdminSection>
-        <AdminSection name='partners' available={checkedFeatures.includes('partners')}>Applications</AdminSection>
-      </ul>
-    </li>
-  )
-}
 
 class Form extends React.Component {
   state = {
