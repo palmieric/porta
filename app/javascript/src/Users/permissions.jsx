@@ -11,17 +11,8 @@ import { FeatureAccessInput } from 'Users/components/FeatureAccessInput'
 import { FeatureAccess } from 'Users/components/FeatureAccess'
 import { ServiceFeatureAccess } from 'Users/components/ServiceFeatureAccess'
 import { ServiceAccessList } from 'Users/components/ServiceAccessList'
+import { AdminSection } from 'Users/components/AdminSection'
 import { getFeatureName, isServicePermissionsGranted } from './utils'
-
-const AdminSection = ({ name, available = false, children }) => {
-  let adminSection = `ServiceAccessList-sectionItem ServiceAccessList-sectionItem--${name} ${available ? '' : 'is-unavailable'}`
-
-  return (
-    <li className={adminSection}>
-      { children }
-    </li>
-  )
-}
 
 const ServiceAccess = ({ service = {}, checkedFeatures, checked = false, disabled = false, onChange }) => {
   let { id, name } = service

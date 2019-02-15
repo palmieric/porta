@@ -4,7 +4,6 @@ import $ from 'jquery'
 import { dom, element } from 'decca' // eslint-disable-line no-unused-vars
 
 import {
-  AdminSection,
   ServiceAccess,
   Form
 } from 'Users/permissions'
@@ -16,34 +15,6 @@ function render (el, context = {}, dispatch) {
 
   return doc.firstChild
 }
-
-describe('AdminSection', function () {
-  const isUnavailable = 'is-unavailable'
-
-  it('renders correct class', function () {
-    let node = render(<AdminSection name='portal'/>)
-
-    expect(node).toHaveClass('ServiceAccessList-sectionItem--portal')
-  })
-
-  it('is available', function () {
-    let node = render(<AdminSection name='portal'/>, { admin_sections: ['portal'] })
-
-    expect(node).not.toHaveClass(isUnavailable)
-  })
-
-  it('is available', function () {
-    let node = render(<AdminSection name='portal'/>, { admin_sections: ['partners'] })
-
-    expect(node).toHaveClass(isUnavailable)
-  })
-
-  it('renders children', function () {
-    let node = render(<AdminSection>Foobar</AdminSection>)
-
-    expect(node).toHaveText('Foobar')
-  })
-})
 
 describe('ServiceAccess', function () {
   const service = { id: 6, name: '3scale Inc.' }
