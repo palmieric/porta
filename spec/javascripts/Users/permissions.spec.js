@@ -4,7 +4,6 @@ import $ from 'jquery'
 import { dom, element } from 'decca' // eslint-disable-line no-unused-vars
 
 import {
-  UserRole,
   Permissions,
   FeatureAccessInput,
   FeatureAccess,
@@ -22,34 +21,6 @@ function render (el, context = {}, dispatch) {
 
   return doc.firstChild
 }
-
-describe('UserRole', function () {
-  it('renders checked', function () {
-    let node = render(<UserRole role='admin'/>, { role: 'admin' })
-
-    expect(node).toContainElement('input[name="user[role]"][type=radio][value=admin]:checked')
-  })
-
-  it('renders unchecked', function () {
-    let node = render(<UserRole role='member'/>, { role: 'admin' })
-    expect(node).toContainElement('input[name="user[role]"][type=radio][value=member]:not(:checked)')
-  })
-
-  it('has label', function () {
-    let node = render(<UserRole role='member' label='Member'/>)
-
-    expect(node).toContainText('Member')
-  })
-
-  it('changes state on click', function () {
-    let dispatch = jasmine.createSpy('dispatch')
-    let node = render(<UserRole role='member'/>, { role: 'admin' }, dispatch)
-
-    $('#user_role_member', node).change()
-
-    expect(dispatch).toHaveBeenCalledWith({ role: 'member' })
-  })
-})
 
 describe('Permissions', function () {
   it('is visible for the same role', function () {

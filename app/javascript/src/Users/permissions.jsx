@@ -6,19 +6,8 @@ import 'core-js/fn/array/includes'
 
 import { Inputs } from 'Users/components/Inputs'
 import { RoleInput } from 'Users/components/RoleInput'
+import { UserRole } from 'Users/components/UserRole'
 import { getFeatureName, isServicePermissionsGranted } from './utils'
-
-const UserRole = ({ role, label, checked, onChange }) => {
-  let change = ({ currentTarget: { value } }) => onChange(value)
-  return (
-    <li>
-      <label htmlFor={`user_role_${role}`}>
-        <input className='roles_ids' name='user[role]' type='radio'
-          id={`user_role_${role}`} checked={checked}
-          value={role} onChange={ change } />{' '}{ label }</label>
-    </li>
-  )
-}
 
 const Permissions = ({ hide, children }) => {
   return (
