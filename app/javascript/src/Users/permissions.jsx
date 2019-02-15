@@ -3,16 +3,9 @@ import { render } from 'react-dom'
 
 import 'core-js/fn/object/assign' // make Object.assign on IE 11
 import 'core-js/fn/array/includes'
-import { getFeatureName, isServicePermissionsGranted } from './utils'
 
-const Inputs = ({ name, children }) => {
-  return (
-    <fieldset className='inputs' name={name}>
-      <legend><span>{name}</span></legend>
-      <ol>{ children }</ol>
-    </fieldset>
-  )
-}
+import { Inputs } from 'Users/components/Inputs'
+import { getFeatureName, isServicePermissionsGranted } from './utils'
 
 const RoleInput = ({ children }) => {
   return (
