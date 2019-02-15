@@ -9,35 +9,8 @@ import { RoleInput } from 'Users/components/RoleInput'
 import { UserRole } from 'Users/components/UserRole'
 import { FeatureAccessInput } from 'Users/components/FeatureAccessInput'
 import { FeatureAccess } from 'Users/components/FeatureAccess'
+import { ServiceFeatureAccess } from 'Users/components/ServiceFeatureAccess'
 import { getFeatureName, isServicePermissionsGranted } from './utils'
-
-const ServiceFeatureAccess = ({ checked = false, onChange, children }) => {
-  let value = 'services'
-
-  let change = () => {
-    onChange(value)
-  }
-
-  let liClass = `FeatureAccessList-item FeatureAccessList-item--${value} FeatureAccessList--noServicePermissionsGranted`
-
-  // if service feature access checkbox is unchecked
-  // at least blank service_ids array has to be sent
-  let blankServiceIdsInput = checked ? null : <input type='hidden' name='user[member_permission_service_ids][]' />
-
-  return (
-    <li className={liClass}>
-      <label htmlFor={`user_member_permission_ids_${value}`}>
-        <input
-          className='user_member_permission_ids' name='user[member_permission_service_ids]'
-          id={`user_member_permission_ids_${value}`} value={''}
-          type='checkbox' checked={ checked }
-          onChange={ change }
-        />{ children }
-      </label>
-      { blankServiceIdsInput }
-    </li>
-  )
-}
 
 const ServiceAccessList = ({ showServices = false, children }) => {
   let olClass = `ServiceAccessList ${showServices ? '' : 'ServiceAccessList--noServicePermissionsGranted'}`

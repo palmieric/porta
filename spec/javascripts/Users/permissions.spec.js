@@ -4,7 +4,6 @@ import $ from 'jquery'
 import { dom, element } from 'decca' // eslint-disable-line no-unused-vars
 
 import {
-  ServiceFeatureAccess,
   ServiceAccessList,
   AdminSection,
   ServiceAccess,
@@ -18,67 +17,6 @@ function render (el, context = {}, dispatch) {
 
   return doc.firstChild
 }
-
-describe('ServiceFeatureAccess', function () {
-  const noServicePermissionsGranted = 'FeatureAccessList--noServicePermissionsGranted'
-
-  it('renders checked', function () {
-    let node = render(<ServiceFeatureAccess value='services'/>, { admin_sections: [] })
-
-    expect(node)
-      .toContainElement('input[name="user[member_permission_service_ids]"][type=checkbox][value=""]:checked')
-  })
-
-  it('renders unchecked', function () {
-    let node = render(<ServiceFeatureAccess value='services'/>, { admin_sections: ['services'] })
-
-    expect(node)
-      .toContainElement('input[name="user[member_permission_service_ids]"][type=checkbox]:not(:checked)')
-  })
-
-  it('has correct class name', function () {
-    let node = render(<ServiceFeatureAccess value='services'/>)
-
-    expect(node).toHaveClass('FeatureAccessList-item--services')
-    expect(node).toHaveClass(noServicePermissionsGranted)
-
-    node = render(<ServiceFeatureAccess value='services'/>, { admin_sections: ['partners'] })
-    expect(node).not.toHaveClass(noServicePermissionsGranted)
-  })
-
-  it('renders children', function () {
-    let node = render(<ServiceFeatureAccess>Foobar</ServiceFeatureAccess>)
-
-    expect(node).toHaveText('Foobar')
-  })
-
-  it('adds section', function () {
-    let dispatch = jasmine.createSpy('dispatch')
-    let node = render(<ServiceFeatureAccess value='services'/>, { admin_sections: [] }, dispatch)
-
-    $('#user_member_permission_ids_services', node).change()
-    expect(dispatch).toHaveBeenCalledWith({ admin_sections: ['services'] })
-  })
-
-  it('removes section', function () {
-    let dispatch = jasmine.createSpy('dispatch')
-    let node = render(<ServiceFeatureAccess value='services'/>, { admin_sections: ['services'] }, dispatch)
-
-    $('#user_member_permission_ids_services', node).change()
-    expect(dispatch).toHaveBeenCalledWith({ admin_sections: [] })
-  })
-
-  it('renders service_ids hidden input if services section has been checked', function () {
-    let hiddenInput = 'input[type=hidden][name="user[member_permission_service_ids][]"]'
-    let nodeUnchecked = render(<ServiceFeatureAccess value='services'/>, { admin_sections: ['services'] })
-
-    expect(nodeUnchecked).toContainElement(hiddenInput)
-
-    let nodeChecked = render(<ServiceFeatureAccess value='services'/>)
-
-    expect(nodeChecked).not.toContainElement(hiddenInput)
-  })
-})
 
 describe('ServiceAccessList', function () {
   const noServicePermissionsGranted = 'ServiceAccessList--noServicePermissionsGranted'
