@@ -1,8 +1,11 @@
-import React from 'react'
-import { render } from 'react-dom'
+// @flow
 
-import 'core-js/fn/object/assign' // make Object.assign on IE 11
-import 'core-js/fn/array/includes'
+import 'raf/polyfill'
+import 'core-js/es6/map'
+import 'core-js/es6/set'
+import 'core-js/es6/array'
+
+import React from 'react'
 
 import { Inputs } from 'Users/components/Inputs'
 import { RoleInput } from 'Users/components/RoleInput'
@@ -12,18 +15,35 @@ import { FeatureAccess } from 'Users/components/FeatureAccess'
 import { ServiceFeatureAccess } from 'Users/components/ServiceFeatureAccess'
 import { ServiceAccessList } from 'Users/components/ServiceAccessList'
 import { ServiceAccess } from 'Users/components/ServiceAccess'
-import { getFeatureName, isServicePermissionsGranted } from './utils'
 
-class Form extends React.Component {
+import { isServicePermissionsGranted, getFeatureName } from 'Users/utils'
+import { createReactWrapper } from 'utilities/createReactWrapper'
+
+import type { Role, Feature } from 'Users/types'
+import type { Service } from 'Types'
+
+type Props = {
+  initialState: any,
+  features: Feature[],
+  services: Service[]
+}
+
+type State = {
+  role: Role,
+  checkedFeatures: Feature[],
+  checkedServicesIds: number[]
+}
+
+class PermissionsForm extends React.Component<Props, State> {
   state = {
     role: this.props.initialState.role || 'admin',
     checkedFeatures: this.props.initialState.admin_sections || [],
     checkedServicesIds: this.props.initialState.member_permission_service_ids || []
   }
 
-  handleRoleChange = (role) => this.setState({ role })
+  handleRoleChange = (role: Role) => this.setState({ role })
 
-  handleFeatureChecked = (feature) => {
+  handleFeatureChecked = (feature: Feature) => {
     const { checkedFeatures } = this.state
 
     const i = checkedFeatures.indexOf(feature)
@@ -76,7 +96,7 @@ class Form extends React.Component {
               <input type='hidden' name='user[member_permission_ids][]' />
               {features.map(feature => (
                 <FeatureAccess key={feature} value={feature} checked={checkedFeatures.includes(feature)} onChange={this.handleFeatureChecked}>
-                  {getFeatureName(feature) /* TODO: add extra space before */ }
+                  {getFeatureName(feature)}
                 </FeatureAccess>
               ))}
               <ServiceFeatureAccess checked={this.allServicesChecked} onChange={this.handleFeatureChecked}>
@@ -102,11 +122,6 @@ class Form extends React.Component {
   }
 }
 
-export const PermissionsFormWrapper = (props, element) => {
-  const container = document.getElementById(element)
-  if (container == null) {
-    throw new Error(`${element} is not part of the DOM`)
-  }
+const PermissionsFormWrapper = (props: Props, containerId: string) => createReactWrapper(<PermissionsForm {...props} />, containerId)
 
-  render(<Form {...props} />, container)
-}
+export { PermissionsForm, PermissionsFormWrapper }
