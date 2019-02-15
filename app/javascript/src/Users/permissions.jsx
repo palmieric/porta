@@ -5,18 +5,8 @@ import 'core-js/fn/object/assign' // make Object.assign on IE 11
 import 'core-js/fn/array/includes'
 
 import { Inputs } from 'Users/components/Inputs'
+import { RoleInput } from 'Users/components/RoleInput'
 import { getFeatureName, isServicePermissionsGranted } from './utils'
-
-const RoleInput = ({ children }) => {
-  return (
-    <li className='radio optional' id='user_role_input'>
-      <fieldset>
-        <legend className='label'><label>Role</label></legend>
-        <ol>{ children }</ol>
-      </fieldset>
-    </li>
-  )
-}
 
 const UserRole = ({ role, label, checked, onChange }) => {
   let change = ({ currentTarget: { value } }) => onChange(value)
