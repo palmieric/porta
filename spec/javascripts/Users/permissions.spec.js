@@ -4,7 +4,6 @@ import $ from 'jquery'
 import { dom, element } from 'decca' // eslint-disable-line no-unused-vars
 
 import {
-  ServiceAccessList,
   AdminSection,
   ServiceAccess,
   Form
@@ -17,29 +16,6 @@ function render (el, context = {}, dispatch) {
 
   return doc.firstChild
 }
-
-describe('ServiceAccessList', function () {
-  const noServicePermissionsGranted = 'ServiceAccessList--noServicePermissionsGranted'
-
-  it('toggles no service permissions granted class', function () {
-    let list = (sections) => {
-      let node = render(<ServiceAccessList />, { admin_sections: sections })
-      return $(node).find('.ServiceAccessList')
-    }
-
-    expect(list([])).toHaveClass(noServicePermissionsGranted)
-    expect(list(['portal'])).toHaveClass(noServicePermissionsGranted)
-    expect(list(['services'])).toHaveClass(noServicePermissionsGranted)
-    expect(list(['finance'])).toHaveClass(noServicePermissionsGranted)
-    expect(list(['partners'])).not.toHaveClass(noServicePermissionsGranted)
-  })
-
-  it('renders children', function () {
-    let node = render(<ServiceAccessList><li id='child'/></ServiceAccessList>)
-
-    expect(node).toContainElement('ol > li#child')
-  })
-})
 
 describe('AdminSection', function () {
   const isUnavailable = 'is-unavailable'

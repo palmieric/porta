@@ -10,19 +10,8 @@ import { UserRole } from 'Users/components/UserRole'
 import { FeatureAccessInput } from 'Users/components/FeatureAccessInput'
 import { FeatureAccess } from 'Users/components/FeatureAccess'
 import { ServiceFeatureAccess } from 'Users/components/ServiceFeatureAccess'
+import { ServiceAccessList } from 'Users/components/ServiceAccessList'
 import { getFeatureName, isServicePermissionsGranted } from './utils'
-
-const ServiceAccessList = ({ showServices = false, children }) => {
-  let olClass = `ServiceAccessList ${showServices ? '' : 'ServiceAccessList--noServicePermissionsGranted'}`
-
-  return (
-    <fieldset>
-      <ol className={olClass}>
-        { children }
-      </ol>
-    </fieldset>
-  )
-}
 
 const AdminSection = ({ name, available = false, children }) => {
   let adminSection = `ServiceAccessList-sectionItem ServiceAccessList-sectionItem--${name} ${available ? '' : 'is-unavailable'}`
