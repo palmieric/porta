@@ -8,28 +8,8 @@ import { Inputs } from 'Users/components/Inputs'
 import { RoleInput } from 'Users/components/RoleInput'
 import { UserRole } from 'Users/components/UserRole'
 import { FeatureAccessInput } from 'Users/components/FeatureAccessInput'
+import { FeatureAccess } from 'Users/components/FeatureAccess'
 import { getFeatureName, isServicePermissionsGranted } from './utils'
-
-const FeatureAccess = ({ value, checked = false, onChange, children }) => {
-  let toggle = () => {
-    onChange(value)
-  }
-
-  let liClass = `FeatureAccessList-item FeatureAccessList-item--${value} ${checked ? 'is-checked' : 'is-unchecked'}`
-  let inputClass = `user_member_permission_ids ${isServicePermissionsGranted(value) ? 'user_member_permission_ids--service' : ''}`
-
-  return (
-    <li className={liClass}>
-      <label htmlFor={`user_member_permission_ids_${value}`}>
-        <input className={inputClass} name='user[member_permission_ids][]'
-          id={`user_member_permission_ids_${value}`} value={value}
-          type='checkbox' checked={ checked }
-          onChange={ toggle }
-        />{ children }
-      </label>
-    </li>
-  )
-}
 
 const ServiceFeatureAccess = ({ checked = false, onChange, children }) => {
   let value = 'services'

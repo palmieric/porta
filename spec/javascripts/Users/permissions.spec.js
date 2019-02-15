@@ -4,7 +4,6 @@ import $ from 'jquery'
 import { dom, element } from 'decca' // eslint-disable-line no-unused-vars
 
 import {
-  FeatureAccess,
   ServiceFeatureAccess,
   ServiceAccessList,
   AdminSection,
@@ -19,62 +18,6 @@ function render (el, context = {}, dispatch) {
 
   return doc.firstChild
 }
-
-describe('FeatureAccess', function () {
-  const isUnchecked = 'is-unchecked'
-  const isChecked = 'is-checked'
-
-  it('renders checked', function () {
-    let node = render(<FeatureAccess value='portal'/>, { admin_sections: ['plans', 'portal'] })
-
-    expect(node)
-      .toContainElement('input[name="user[member_permission_ids][]"][type=checkbox][value=portal]:checked')
-    expect(node).toHaveClass(isChecked)
-    expect(node).not.toHaveClass(isUnchecked)
-  })
-
-  it('renders unchecked', function () {
-    let node = render(<FeatureAccess value='plans'/>)
-
-    expect(node)
-      .toContainElement('input[name="user[member_permission_ids][]"][type=checkbox][value=plans]:not(:checked)')
-    expect(node).toHaveClass(isUnchecked)
-    expect(node).not.toHaveClass(isChecked)
-  })
-
-  it('has correct class name', function () {
-    let node = render(<FeatureAccess value='partners'/>)
-
-    expect(node).toHaveClass('FeatureAccessList-item--partners')
-    expect(node).toContainElement('input.user_member_permission_ids--service')
-
-    node = render(<FeatureAccess value='portal'/>)
-    expect(node).toHaveClass('FeatureAccessList-item--portal')
-    expect(node).not.toContainElement('input.user_member_permission_ids--service')
-  })
-
-  it('renders children', function () {
-    let node = render(<FeatureAccess>Foobar</FeatureAccess>)
-
-    expect(node).toHaveText('Foobar')
-  })
-
-  it('adds section', function () {
-    let dispatch = jasmine.createSpy('dispatch')
-    let node = render(<FeatureAccess value='plans'/>, { admin_sections: [] }, dispatch)
-
-    $('#user_member_permission_ids_plans', node).change()
-    expect(dispatch).toHaveBeenCalledWith({ admin_sections: ['plans'] })
-  })
-
-  it('removes section', function () {
-    let dispatch = jasmine.createSpy('dispatch')
-    let node = render(<FeatureAccess value='plans'/>, { admin_sections: ['plans'] }, dispatch)
-
-    $('#user_member_permission_ids_plans', node).change()
-    expect(dispatch).toHaveBeenCalledWith({ admin_sections: [] })
-  })
-})
 
 describe('ServiceFeatureAccess', function () {
   const noServicePermissionsGranted = 'FeatureAccessList--noServicePermissionsGranted'
