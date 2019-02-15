@@ -1,5 +1,5 @@
-import { render as renderPermissionsWidget } from 'Users/permissions'
+import { PermissionsFormWrapper } from 'Users/permissions'
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.renderPermissionsWidget = renderPermissionsWidget
+  window.renderPermissionsWidget = PermissionsFormWrapper
 })

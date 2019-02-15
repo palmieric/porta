@@ -1,266 +1,250 @@
-/** @jsx element */
+import React from 'react'
+import { render } from 'react-dom'
 
 import 'core-js/fn/object/assign' // make Object.assign on IE 11
 import 'core-js/fn/array/includes'
-import {dom, element} from 'decca' // eslint-disable-line no-unused-vars
-import classNames from 'classnames'
 import { getFeatureName, isServicePermissionsGranted } from './utils'
 
-const Inputs = { // eslint-disable-line no-unused-vars
-  render ({props, children}) {
-    return (
-      <fieldset class='inputs' name={props.name}>
-        <legend><span>{props.name}</span></legend>
+const Inputs = ({ name, children }) => {
+  return (
+    <fieldset className='inputs' name={name}>
+      <legend><span>{name}</span></legend>
+      <ol>{ children }</ol>
+    </fieldset>
+  )
+}
+
+const RoleInput = ({ children }) => {
+  return (
+    <li className='radio optional' id='user_role_input'>
+      <fieldset>
+        <legend className='label'><label>Role</label></legend>
         <ol>{ children }</ol>
       </fieldset>
-    )
-  }
+    </li>
+  )
 }
 
-const RoleInput = { // eslint-disable-line no-unused-vars
-  render ({props, children}) {
-    return (
-      <li class='radio optional' id='user_role_input'>
-        <fieldset>
-          <legend class='label'><label>Role</label></legend>
-          <ol>{ children }</ol>
-        </fieldset>
-      </li>
-    )
-  }
+const UserRole = ({ role, label, checked, onChange }) => {
+  let change = ({ currentTarget: { value } }) => onChange(value)
+  return (
+    <li>
+      <label htmlFor={`user_role_${role}`}>
+        <input className='roles_ids' name='user[role]' type='radio'
+          id={`user_role_${role}`} checked={checked}
+          value={role} onChange={ change } />{' '}{ label }</label>
+    </li>
+  )
 }
 
-export const UserRole = {
-  render ({props, context = {}, dispatch}) {
-    let { role, label } = props
-
-    let change = () => {
-      dispatch({role: role})
-    }
-
-    return (
-      <li>
-        <label for={`user_role_${role}`}>
-          <input class='roles_ids' name='user[role]' type='radio'
-            id={`user_role_${role}`} checked={ role === context.role }
-            value={role} onChange={ change } />{' '}{ label }</label>
-      </li>
-    )
-  }
+const Permissions = ({ hide, children }) => {
+  return (
+    <li className='radio optional' id='user_member_permissions_input'>
+      { children }
+    </li>
+  )
 }
 
-export const Permissions = { // eslint-disable-line no-unused-vars
-  render ({ props, context, children }) {
-    return (
-      <li class='radio optional' id='user_member_permissions_input'
-        style={{ display: context.role === props.role ? 'block' : 'none' }}>
+const FeatureAccessInput = ({ showServices = false, children }) => {
+  let olClass = `FeatureAccessList ${showServices ? '' : 'FeatureAccessList--noServicePermissionsGranted'}`
+
+  return (
+    <fieldset>
+      <legend className='label'><label>This user can access</label></legend>
+      <ol className={olClass}>{ children }</ol>
+    </fieldset>
+  )
+}
+
+const FeatureAccess = ({ value, checked = false, onChange, children }) => {
+  let toggle = () => {
+    onChange(value)
+  }
+
+  let liClass = `FeatureAccessList-item FeatureAccessList-item--${value} ${checked ? 'is-checked' : 'is-unchecked'}`
+  let inputClass = `user_member_permission_ids ${isServicePermissionsGranted(value) ? 'user_member_permission_ids--service' : ''}`
+
+  return (
+    <li className={liClass}>
+      <label htmlFor={`user_member_permission_ids_${value}`}>
+        <input className={inputClass} name='user[member_permission_ids][]'
+          id={`user_member_permission_ids_${value}`} value={value}
+          type='checkbox' checked={ checked }
+          onChange={ toggle }
+        />{ children }
+      </label>
+    </li>
+  )
+}
+
+const ServiceFeatureAccess = ({ checked = false, onChange, children }) => {
+  let value = 'services'
+
+  let change = () => {
+    onChange(value)
+  }
+
+  let liClass = `FeatureAccessList-item FeatureAccessList-item--${value} FeatureAccessList--noServicePermissionsGranted`
+
+  // if service feature access checkbox is unchecked
+  // at least blank service_ids array has to be sent
+  let blankServiceIdsInput = checked ? null : <input type='hidden' name='user[member_permission_service_ids][]' />
+
+  return (
+    <li className={liClass}>
+      <label htmlFor={`user_member_permission_ids_${value}`}>
+        <input
+          className='user_member_permission_ids' name='user[member_permission_service_ids]'
+          id={`user_member_permission_ids_${value}`} value={''}
+          type='checkbox' checked={ checked }
+          onChange={ change }
+        />{ children }
+      </label>
+      { blankServiceIdsInput }
+    </li>
+  )
+}
+
+const ServiceAccessList = ({ showServices = false, children }) => {
+  let olClass = `ServiceAccessList ${showServices ? '' : 'ServiceAccessList--noServicePermissionsGranted'}`
+
+  return (
+    <fieldset>
+      <ol className={olClass}>
         { children }
-      </li>
-    )
-  }
+      </ol>
+    </fieldset>
+  )
 }
 
-export const FeatureAccessInput = { // eslint-disable-line no-unused-vars
-  render ({ children, context }) {
-    let olClass = classNames('FeatureAccessList',
-      {'FeatureAccessList--noServicePermissionsGranted': !isServicePermissionsGranted(context.admin_sections)})
+const AdminSection = ({ name, available = false, children }) => {
+  let adminSection = `ServiceAccessList-sectionItem ServiceAccessList-sectionItem--${name} ${available ? '' : 'is-unavailable'}`
 
-    return (
-      <fieldset>
-        <legend class='label'><label>This user can access</label></legend>
-        <ol class={olClass}>{ children }</ol>
-      </fieldset>
-    )
-  }
+  return (
+    <li className={adminSection}>
+      { children }
+    </li>
+  )
 }
 
-export const FeatureAccess = { // eslint-disable-line no-unused-vars
-  render ({props, children, context, dispatch}) {
-    let { value } = props
-    let sections = new Set(context.admin_sections)
+const ServiceAccess = ({ service = {}, checkedFeatures, checked = false, disabled = false, onChange }) => {
+  let { id, name } = service
 
-    let checked = sections.has(value)
+  let toggle = () => {
+    onChange(id)
+  }
+  return (
+    <li className='ServiceAccessList-item'>
+      <label className='ServiceAccessList-label is-checked'
+        htmlFor={`user_member_permission_service_ids_${id}`}>
+        <input className='user_member_permission_service_ids'
+          id={`user_member_permission_service_ids_${id}`}
+          name='user[member_permission_service_ids][]' type='checkbox' value={id}
+          checked={checked} disabled={disabled} onChange={toggle}/>
+        <span className='ServiceAccessList-labelText'>&nbsp;{ name }</span>
+      </label>
+      <ul className='ServiceAccessList-sections'>
+        <AdminSection name='plans' available={checkedFeatures.includes('plans')}>Integration & Application Plans</AdminSection>
+        <AdminSection name='monitoring' available={checkedFeatures.includes('monitoring')}>Analytics</AdminSection>
+        <AdminSection name='partners' available={checkedFeatures.includes('partners')}>Applications</AdminSection>
+      </ul>
+    </li>
+  )
+}
 
-    let toggle = () => {
-      sections[checked ? 'delete' : 'add'](value)
-      let state = { admin_sections: [...sections] }
+class Form extends React.Component {
+  state = {
+    role: this.props.initialState.role || 'admin',
+    checkedFeatures: this.props.initialState.admin_sections || [],
+    checkedServicesIds: this.props.initialState.member_permission_service_ids || []
+  }
 
-      return dispatch(state)
+  handleRoleChange = (role) => this.setState({ role })
+
+  handleFeatureChecked = (feature) => {
+    const { checkedFeatures } = this.state
+
+    const i = checkedFeatures.indexOf(feature)
+
+    if (i > -1) {
+      checkedFeatures.splice(i, 1)
+    } else {
+      checkedFeatures.push(feature)
     }
 
-    let liClass = classNames(
-      `FeatureAccessList-item FeatureAccessList-item--${value}`,
-      { 'is-unchecked': !checked, 'is-checked': checked }
-    )
-
-    let inputClass = classNames('user_member_permission_ids',
-      { 'user_member_permission_ids--service': isServicePermissionsGranted(value) })
-
-    return (
-      <li class={liClass}>
-        <label for={`user_member_permission_ids_${value}`}>
-          <input class={inputClass} name='user[member_permission_ids][]'
-            id={`user_member_permission_ids_${value}`} value={value}
-            type='checkbox' checked={ checked }
-            onChange={ toggle }
-          />{ children }
-        </label>
-      </li>
-    )
+    this.setState({ checkedFeatures })
   }
-}
 
-export const ServiceFeatureAccess = { // eslint-disable-line no-unused-vars
-  render ({props, children, context, dispatch}) {
-    let { value } = props
-    let sections = new Set(context.admin_sections)
-    let checked = !sections.has(value)
+  handleServiceChecked = (id: number) => {
+    const { checkedServicesIds } = this.state
 
-    let change = () => {
-      sections[checked ? 'add' : 'delete'](value)
-      let state = { admin_sections: [...sections] }
+    const i = checkedServicesIds.indexOf(id)
 
-      return dispatch(state)
+    if (i > -1) {
+      checkedServicesIds.splice(i, 1)
+    } else {
+      checkedServicesIds.push(id)
     }
 
-    let liClass = classNames(`FeatureAccessList-item FeatureAccessList-item--${value}`,
-      { 'FeatureAccessList--noServicePermissionsGranted': !isServicePermissionsGranted(context.admin_sections) })
-
-    // if service feature access checkbox is unchecked
-    // at least blank service_ids array has to be sent
-    let blankServiceIdsInput = !checked ? <input type='hidden' name='user[member_permission_service_ids][]' /> : null
-
-    return (
-      <li class={liClass}>
-        <label for={`user_member_permission_ids_${value}`}>
-          <input class='user_member_permission_ids' name='user[member_permission_service_ids]'
-            id={`user_member_permission_ids_${value}`} attributes={{value: ''}}
-            type='checkbox' checked={ checked }
-            onChange={ change }
-          />{ children }
-        </label>
-        { blankServiceIdsInput }
-      </li>
-    )
+    this.setState({ checkedServicesIds })
   }
-}
 
-export const ServiceAccessList = { // eslint-disable-line no-unused-vars
-  render ({children, context}) {
-    let olClass = classNames('ServiceAccessList',
-      { 'ServiceAccessList--noServicePermissionsGranted': !isServicePermissionsGranted(context.admin_sections) })
-
-    return (
-      <fieldset>
-        <ol class={olClass}>
-          { children }
-        </ol>
-      </fieldset>
-    )
+  get servicePermissionsGranted () {
+    return isServicePermissionsGranted(this.state.checkedFeatures)
   }
-}
 
-export const AdminSection = { // eslint-disable-line no-unused-vars
-  render ({props, children, context}) {
-    let sections = new Set(context.admin_sections)
-    let { name } = props
-    let available = sections.has(name)
-
-    return (
-      <li class={classNames(`ServiceAccessList-sectionItem ServiceAccessList-sectionItem--${name}`, { 'is-unavailable': !available })}>
-        { children }
-      </li>
-    )
+  get allServicesChecked () {
+    return !this.state.checkedFeatures.includes('services')
   }
-}
 
-export const ServiceAccess = { // eslint-disable-line no-unused-vars
-  render ({props, context, dispatch}) {
-    let { id, name } = props.service || {}
+  render () {
+    const { features, services } = this.props
+    const { role, checkedFeatures, checkedServicesIds } = this.state
 
-    // if the user doesn't have a `services` admin section, it means all APIs are enabled
-    let allServicesEnabled = !(new Set(context.admin_sections)).has('services')
-    let ids = context.member_permission_service_ids || []
-    let checked = allServicesEnabled || ids.includes(id)
-    // if all services are enabled, individual checkboxes for each service should be disabled
-    let disabled = allServicesEnabled
-
-    let toggle = () => {
-      let services = new Set(ids)
-      services[checked ? 'delete' : 'add'](id)
-      let state = { member_permission_service_ids: [...services] }
-
-      return dispatch(state)
-    }
-
-    return (
-      <li class='ServiceAccessList-item'>
-        <label class='ServiceAccessList-label is-checked'
-          for={`user_member_permission_service_ids_${id}`}>
-          <input class='user_member_permission_service_ids'
-            id={`user_member_permission_service_ids_${id}`}
-            name='user[member_permission_service_ids][]' type='checkbox' value={id}
-            checked={ checked } disabled={ disabled } onChange={toggle}/>
-          <span class='ServiceAccessList-labelText'>&nbsp;{ name }</span>
-        </label>
-        <ul class='ServiceAccessList-sections'>
-          <AdminSection name='plans'>Integration & Application Plans</AdminSection>
-          <AdminSection name='monitoring'>Analytics</AdminSection>
-          <AdminSection name='partners'>Applications</AdminSection>
-        </ul>
-      </li>
-    )
-  }
-}
-
-export const Form = { // eslint-disable-line no-unused-vars
-  render ({ props }) {
-    let { services, features } = props
     return (
       <Inputs name='Administrative'>
         <RoleInput>
-          <UserRole role='admin' label='Admin (full access)'/>
-          <UserRole role='member' label='Member'/>
+          <UserRole role='admin' label='Admin (full access)' checked={role === 'admin'} onChange={this.handleRoleChange}/>
+          <UserRole role='member' label='Member' checked={role === 'member'} onChange={this.handleRoleChange}/>
         </RoleInput>
 
-        <Permissions role='member'>
-          <FeatureAccessInput role='member'>
+        {role === 'member' && (
+          <Permissions>
+            <FeatureAccessInput showServices={this.servicePermissionsGranted}>
+              <input type='hidden' name='user[member_permission_ids][]' />
+              {features.map(feature => (
+                <FeatureAccess key={feature} value={feature} checked={checkedFeatures.includes(feature)} onChange={this.handleFeatureChecked}>
+                  {getFeatureName(feature) /* TODO: add extra space before */ }
+                </FeatureAccess>
+              ))}
+              <ServiceFeatureAccess checked={this.allServicesChecked} onChange={this.handleFeatureChecked}>
+                All current and future APIs
+              </ServiceFeatureAccess>
+            </FeatureAccessInput>
 
-            <input type='hidden' name='user[member_permission_ids][]' />
-            {features.map(feature => <FeatureAccess value={feature}>&nbsp;{getFeatureName(feature)}</FeatureAccess>)}
-            <ServiceFeatureAccess value='services'> All current and future APIs</ServiceFeatureAccess>
-          </FeatureAccessInput>
-
-          <ServiceAccessList>
-            {services.map(service => <ServiceAccess service={service}/>)}
-          </ServiceAccessList>
-        </Permissions>
+            <ServiceAccessList showServices={this.servicePermissionsGranted}>
+              {services.map(service => (
+                <ServiceAccess
+                  key={service.id}
+                  service={service}
+                  checked={this.allServicesChecked || checkedServicesIds.includes(service.id)}
+                  disabled={this.allServicesChecked}
+                  checkedFeatures={checkedFeatures}
+                  onChange={this.handleServiceChecked}
+                />))}
+            </ServiceAccessList>
+          </Permissions>
+        )}
       </Inputs>
     )
   }
 }
 
-let initialState = { }
-
-export function render ({el, state = initialState, services = [], features = []}) {
-  let render = dom.createRenderer(el, dispatch)
-
-  let rendering = false
-
-  function dispatch (newState = {}) {
-    state = Object.assign({}, state, newState)
-
-    if (!rendering) {
-      rendering = true
-      try {
-        render(<Form services={services} features={features}/>, state)
-      } finally {
-        rendering = false
-      }
-    } else {
-      console.error('already rendering!')
-    }
+export const PermissionsFormWrapper = (props, element) => {
+  const container = document.getElementById(element)
+  if (container == null) {
+    throw new Error(`${element} is not part of the DOM`)
   }
 
-  dispatch()
+  render(<Form {...props} />, container)
 }
