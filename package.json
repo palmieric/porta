@@ -71,6 +71,7 @@
     "webpack-dev-server": "2.11.2"
   },
   "dependencies": {
+    "@patternfly/react-core": "^2.1.4",
     "@rails/webpacker": "^3.5.5",
     "ajv": "^6.5.5",
     "bootstrap-sass": "3",

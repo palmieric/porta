@@ -3,7 +3,7 @@
   border-top: line-height-times(1 / 10) solid $header-border-color;
   height: line-height-times(5 / 2);
   padding: 0 0 0 0;
-  position: fixed;
+  // position: fixed;
   width: 100%;
   z-index: 1052; // select2 dropdown has z-index of 1051
   top: 0;
