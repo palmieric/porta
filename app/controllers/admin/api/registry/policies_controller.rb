@@ -8,6 +8,8 @@ class Admin::Api::Registry::PoliciesController < Admin::Api::BaseController
 
   representer ::Policy
 
+  before_action :authorize_policies
+
 
   # swagger
   ##~ sapi = source2swagger.namespace("Policy Registry API")
@@ -32,6 +34,10 @@ class Admin::Api::Registry::PoliciesController < Admin::Api::BaseController
   end
 
   private
+
+  def authorize_policies
+    authorize! :manage, :policies
+  end
 
   def policy_params
     params.require(:policy).permit(:name, :version, :schema)

@@ -57,6 +57,44 @@ class Logic::RollingUpdatesTest < ActiveSupport::TestCase
     assert account.provider_can_use?(:service_permissions)
   end
 
+  class Logic::RollingUpdateUserTest < Logic::RollingUpdatesTest
+    def setup
+      @user = User.new({account: Account.new}, without_protection: true)
+      Logic::RollingUpdates.stubs(skipped?: false)
+      Logic::RollingUpdates.stubs(enabled: true)
+      user.stubs(impersonation_admin?: false)
+      user.account.stubs(provider_can_use?: true)
+    end
+
+    attr_reader :user
+
+    test 'provider_can_use? is false is the account does not have the rolling update' do
+      user.account.stubs(provider_can_use?: false)
+      refute user.provider_can_use?(:foobar)
+    end
+
+    test 'provider_can_use? is true if the rolling update is enabled, it is not an impersonation_admin and the account has the rolling update' do
+      user.account.stubs(provider_can_use?: true)
+      assert user.provider_can_use?(:foobar)
+    end
+
+    test 'provider_can_use? is false if it is the impersonation admin and the account does not have the rolling update' do
+      user.account.stubs(provider_can_use?: false)
+      user.stubs(impersonation_admin?: true)
+      assert user.provider_can_use?(:foobar)
+    end
+
+    test 'provider_can_use? is always true if rolling updates are skipped' do
+      Logic::RollingUpdates.stubs(skipped?: true)
+      refute user.provider_can_use?(:foobar)
+    end
+
+    test 'provider_can_use? is false if rolling updates are disabled' do
+      Logic::RollingUpdates.stubs(enabled: false)
+      assert user.provider_can_use?(:foobar)
+    end
+  end
+
   test "Provider: provider_can_use? returns false if you're not in the list" do
     provider = Account.new
     refute provider.provider_can_use?(:instant_bill_plan_change)
@@ -103,8 +141,7 @@ class Logic::RollingUpdatesTest < ActiveSupport::TestCase
   test "Controller: provider_can_use? delegate to current_account" do
     controller_instance = mocked_controller
 
-    user = User.new
-    controller_instance.expects(:current_user).returns(user).once
+    controller_instance.expects(:current_user).returns(nil).once
 
     provider = Account.new
     provider.expects(:provider_can_use?).with(:whathever)

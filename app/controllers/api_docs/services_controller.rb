@@ -8,6 +8,8 @@ class ApiDocs::ServicesController < FrontendController
   delegate :master_on_premises?, to: :current_account, allow_nil: true
   delegate :master?, to: :current_account, allow_nil: true
 
+  include Logic::RollingUpdates::Controller
+
   class << self
     def forbidden_apis
       ThreeScale.master_on_premises? ? %i[billing_api] : []
@@ -113,8 +115,7 @@ class ApiDocs::ServicesController < FrontendController
   end.freeze
 
   def index
-    not_master_api_selector = proc { |api| api.fetch(:system_name) != :master_api }
-    render json: { host: '', apis: master? ? apis : apis(&not_master_api_selector) }
+    render json: { host: '', apis: apis(&method(:allowed_api?)) }
   end
 
   def show
@@ -123,5 +124,18 @@ class ApiDocs::ServicesController < FrontendController
     api_file['apis'] = exclude_plan_endpoints(api_file['apis']) if master_on_premises?
 
     render json: api_file
+  end
+
+  private
+
+  def allowed_api?(api)
+    case api[:system_name]
+    when :master_api
+      master?
+    when :policy_registry_api
+      provider_can_use?(:policies) && current_account.tenant?
+    else
+      true
+    end
   end
 end

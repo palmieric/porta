@@ -21,6 +21,7 @@ class User < ApplicationRecord
   include Invitations
   include Permissions
   include ProvidedAccessTokens
+  include Logic::RollingUpdates::User
 
   audited
 

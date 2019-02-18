@@ -284,6 +284,15 @@ module Logic
       end
     end
 
+    module User
+      def provider_can_use?(feature)
+        return false if Logic::RollingUpdates.skipped?
+        return true if Logic::RollingUpdates.disabled?
+
+        impersonation_admin? || account.provider_can_use?(feature)
+      end
+    end
+
     module Provider
       def enterprise?
         # bought plan depends on a bought cinstance
@@ -334,8 +343,7 @@ module Logic
       def provider_can_use?(fresh_feature)
         return false if Logic::RollingUpdates.skipped?
         return true if Logic::RollingUpdates.disabled?
-
-        current_user&.impersonation_admin? || current_account.provider_can_use?(fresh_feature)
+        (current_user || current_account).provider_can_use?(fresh_feature)
       end
     end
   end
