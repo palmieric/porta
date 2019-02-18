@@ -5,7 +5,6 @@ import { dom, element } from 'decca' // eslint-disable-line no-unused-vars
 
 import {
   Permissions,
-  FeatureAccessInput,
   FeatureAccess,
   ServiceFeatureAccess,
   ServiceAccessList,
@@ -37,29 +36,6 @@ describe('Permissions', function () {
     document.body.appendChild(node)
 
     expect(node).not.toBeVisible()
-  })
-})
-
-describe('FeatureAccessInput', function () {
-  const noServicePermissionsGranted = 'FeatureAccessList--noServicePermissionsGranted'
-
-  it('toggles no service permissions granted class', function () {
-    let list = (sections) => {
-      let node = render(<FeatureAccessInput />, { admin_sections: sections })
-      return $(node).find('.FeatureAccessList')
-    }
-
-    expect(list([])).toHaveClass(noServicePermissionsGranted)
-    expect(list(['portal'])).toHaveClass(noServicePermissionsGranted)
-    expect(list(['services'])).toHaveClass(noServicePermissionsGranted)
-    expect(list(['finance'])).toHaveClass(noServicePermissionsGranted)
-    expect(list(['partners'])).not.toHaveClass(noServicePermissionsGranted)
-  })
-
-  it('renders children', function () {
-    let node = render(<FeatureAccessInput><li id='child'/></FeatureAccessInput>)
-
-    expect(node).toContainElement('ol > li#child')
   })
 })
 

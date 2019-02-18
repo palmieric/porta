@@ -7,6 +7,7 @@ import 'core-js/fn/array/includes'
 import { Inputs } from 'Users/components/Inputs'
 import { RoleInput } from 'Users/components/RoleInput'
 import { UserRole } from 'Users/components/UserRole'
+import { FeatureAccessInput } from 'Users/components/FeatureAccessInput'
 import { getFeatureName, isServicePermissionsGranted } from './utils'
 
 const Permissions = ({ hide, children }) => {
@@ -14,17 +15,6 @@ const Permissions = ({ hide, children }) => {
     <li className='radio optional' id='user_member_permissions_input'>
       { children }
     </li>
-  )
-}
-
-const FeatureAccessInput = ({ showServices = false, children }) => {
-  let olClass = `FeatureAccessList ${showServices ? '' : 'FeatureAccessList--noServicePermissionsGranted'}`
-
-  return (
-    <fieldset>
-      <legend className='label'><label>This user can access</label></legend>
-      <ol className={olClass}>{ children }</ol>
-    </fieldset>
   )
 }
 
