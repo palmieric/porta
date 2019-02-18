@@ -4,7 +4,6 @@ import $ from 'jquery'
 import { dom, element } from 'decca' // eslint-disable-line no-unused-vars
 
 import {
-  Permissions,
   FeatureAccess,
   ServiceFeatureAccess,
   ServiceAccessList,
@@ -20,24 +19,6 @@ function render (el, context = {}, dispatch) {
 
   return doc.firstChild
 }
-
-describe('Permissions', function () {
-  it('is visible for the same role', function () {
-    let node = render(<Permissions role='member'/>, { role: 'member' })
-
-    document.body.appendChild(node)
-
-    expect(node).toBeVisible()
-  })
-
-  it('is visible for the same role', function () {
-    let node = render(<Permissions role='admin'/>, { role: 'member' })
-
-    document.body.appendChild(node)
-
-    expect(node).not.toBeVisible()
-  })
-})
 
 describe('FeatureAccess', function () {
   const isUnchecked = 'is-unchecked'

@@ -10,14 +10,6 @@ import { UserRole } from 'Users/components/UserRole'
 import { FeatureAccessInput } from 'Users/components/FeatureAccessInput'
 import { getFeatureName, isServicePermissionsGranted } from './utils'
 
-const Permissions = ({ hide, children }) => {
-  return (
-    <li className='radio optional' id='user_member_permissions_input'>
-      { children }
-    </li>
-  )
-}
-
 const FeatureAccess = ({ value, checked = false, onChange, children }) => {
   let toggle = () => {
     onChange(value)
@@ -171,7 +163,7 @@ class Form extends React.Component {
         </RoleInput>
 
         {role === 'member' && (
-          <Permissions>
+          <li className='radio optional' id='user_member_permissions_input'>
             <FeatureAccessInput showServices={this.servicePermissionsGranted}>
               <input type='hidden' name='user[member_permission_ids][]' />
               {features.map(feature => (
@@ -195,7 +187,7 @@ class Form extends React.Component {
                   onChange={this.handleServiceChecked}
                 />))}
             </ServiceAccessList>
-          </Permissions>
+          </li>
         )}
       </Inputs>
     )
