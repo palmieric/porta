@@ -16,7 +16,7 @@ import { ServiceFeatureAccess } from 'Users/components/ServiceFeatureAccess'
 import { ServiceAccessList } from 'Users/components/ServiceAccessList'
 import { ServiceAccess } from 'Users/components/ServiceAccess'
 
-import { isServicePermissionsGranted, getFeatureName } from 'Users/utils'
+import { isServicePermissionsGranted, getFeatureName, toggleElementInCollection } from 'Users/utils'
 import { createReactWrapper } from 'utilities/createReactWrapper'
 
 import type { Role, Feature } from 'Users/types'
@@ -45,30 +45,12 @@ class PermissionsForm extends React.Component<Props, State> {
 
   handleFeatureChecked = (feature: Feature) => {
     const { checkedFeatures } = this.state
-
-    const i = checkedFeatures.indexOf(feature)
-
-    if (i > -1) {
-      checkedFeatures.splice(i, 1)
-    } else {
-      checkedFeatures.push(feature)
-    }
-
-    this.setState({ checkedFeatures })
+    this.setState({ checkedFeatures: toggleElementInCollection(feature, checkedFeatures) })
   }
 
   handleServiceChecked = (id: number) => {
     const { checkedServicesIds } = this.state
-
-    const i = checkedServicesIds.indexOf(id)
-
-    if (i > -1) {
-      checkedServicesIds.splice(i, 1)
-    } else {
-      checkedServicesIds.push(id)
-    }
-
-    this.setState({ checkedServicesIds })
+    this.setState({ checkedServicesIds: toggleElementInCollection(id, checkedServicesIds) })
   }
 
   get servicePermissionsGranted () {

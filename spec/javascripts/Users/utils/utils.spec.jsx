@@ -1,4 +1,4 @@
-import { isServicePermissionsGranted } from 'Users/utils'
+import { isServicePermissionsGranted, toggleElementInCollection } from 'Users/utils'
 
 describe('isServicePermissionsGranted', () => {
   it('should return whether or not service permissions are available', () => {
@@ -16,5 +16,21 @@ describe('isServicePermissionsGranted', () => {
 
     expect(isServicePermissionsGranted(['portal', 'partners'])).toBe(true)
     expect(isServicePermissionsGranted(['plans', 'partners'])).toBe(true)
+  })
+})
+
+describe('toggleElementInCollection', () => {
+  it('should add element if not present in collection', () => {
+    const el = 'c'
+    const collection = ['a', 'b']
+
+    expect(toggleElementInCollection(el, collection)).toContain(el)
+  })
+
+  it('should remove element if present in collection', () => {
+    const el = 'c'
+    const collection = ['a', 'b', 'c']
+
+    expect(toggleElementInCollection(el, collection)).not.toContain(el)
   })
 })

@@ -28,3 +28,15 @@ export function isServicePermissionsGranted (features: string | Array<string>): 
     return !!features.find(isServicePermissionsGranted)
   }
 }
+
+export function toggleElementInCollection<T> (el: T, collection: T[]): T[] {
+  const i = collection.indexOf(el)
+
+  if (i > -1) {
+    collection.splice(i, 1)
+  } else {
+    collection.push(el)
+  }
+
+  return collection
+}
